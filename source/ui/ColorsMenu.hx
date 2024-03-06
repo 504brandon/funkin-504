@@ -1,5 +1,6 @@
 package ui;
 
+import flixel.text.FlxText;
 import flixel.FlxG;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxOutlineEffect;
@@ -12,9 +13,14 @@ class ColorsMenu extends ui.OptionsState.Page
 
 	var grpNotes:FlxTypedGroup<Note>;
 
+	var noteColorText:FlxTypedGroup<FlxText>;
+
 	public function new()
 	{
 		super();
+
+		noteColorText = new FlxTypedGroup<FlxText>();
+		add(noteColorText);
 
 		grpNotes = new FlxTypedGroup<Note>();
 		add(grpNotes);
@@ -22,28 +28,38 @@ class ColorsMenu extends ui.OptionsState.Page
 		for (i in 0...4)
 		{
 			var note:Note = new Note(0, i);
-
 			note.x = (100 * i) + i;
 			note.screenCenter(Y);
-
-			var _effectSpr:FlxEffectSprite = new FlxEffectSprite(note, [new FlxOutlineEffect(FlxOutlineMode.FAST, FlxColor.WHITE, 4, 1)]);
-			add(_effectSpr);
-			_effectSpr.y = 0;
-			_effectSpr.x = i * 130;
-			_effectSpr.antialiasing = true;
-			_effectSpr.scale.x = _effectSpr.scale.y = 0.7;
-			// _effectSpr.setGraphicSize();
-			_effectSpr.height = note.height;
-			_effectSpr.width = note.width;
-
-			// _effectSpr.updateHitbox();
-
 			grpNotes.add(note);
+
+			var text = new FlxText(note.y - 40, note.x, FlxG.width, "0", 9);
+			text.setFormat(Paths.font("vcr.ttf"), 9, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			noteColorText.add(text);
 		}
 	}
 
+	var colorArray:Array<Float> = [];
+
 	override function update(elapsed:Float)
 	{
+		for (i in 0...4) {
+			if (i == curSelected){
+				grpNotes.members[i].alpha = 1;
+				noteColorText.members[i].alpha = 1;
+			}else{
+				grpNotes.members[i].alpha = 0.50;
+				noteColorText.members[i].alpha = 0.50;
+			}
+
+			noteColorText.members[i].text = "" + grpNotes.members[i].colorSwap.hueShit;
+
+			colorArray.push(grpNotes.members[i].colorSwap.hueShit);
+		}
+
+		PreferencesMenu.setPref("noteColors", colorArray);
+
+		colorArray = [];
+
 		if (controls.UI_RIGHT_P)
 			curSelected += 1;
 		if (controls.UI_LEFT_P)

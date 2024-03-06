@@ -61,10 +61,16 @@ class PreferencesMenu extends ui.OptionsState.Page
 	public static function setPref(pref:String, value:Dynamic):Void
 	{
 		preferences.set(pref, value);
+		FlxG.save.data.preferences = preferences;
 	}
 
 	public static function initPrefs():Void
 	{
+		if (FlxG.save.data.preferences != null)
+			preferences = FlxG.save.data.preferences;
+		else
+			FlxG.save.data.preferences = preferences;
+
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
 		preferenceCheck('flashing-menu', true);
@@ -72,6 +78,7 @@ class PreferencesMenu extends ui.OptionsState.Page
 		preferenceCheck('fps-counter', true);
 		preferenceCheck('auto-pause', false);
 		preferenceCheck('master-volume', 1);
+		preferenceCheck('noteColors', [1, 1, 1, 1]);
 
 		#if muted
 		setPref('master-volume', 0);
@@ -82,6 +89,8 @@ class PreferencesMenu extends ui.OptionsState.Page
 			FlxG.stage.removeChild(Main.fpsCounter);
 
 		FlxG.autoPause = getPref('auto-pause');
+
+		Note.arrowColors = getPref("noteColors");
 	}
 
 	private function createPrefItem(prefName:String, prefString:String, prefValue:Dynamic):Void
@@ -142,6 +151,8 @@ class PreferencesMenu extends ui.OptionsState.Page
 		}
 
 		if (prefName == 'fps-counter') {}
+
+		FlxG.save.data.preferences = preferences;
 	}
 
 	override function update(elapsed:Float)

@@ -31,13 +31,16 @@ class OptionsState extends MusicBeatState
 		var options = addPage(Options, new OptionsMenu(false));
 		var preferences = addPage(Preferences, new PreferencesMenu());
 		var controls = addPage(Controls, new ControlsMenu());
-		// var colors = addPage(Colors, new ColorsMenu());
+		var colors = addPage(Colors, new ColorsMenu());
+		var mods = addPage(Mods, new ModMenu());
 
 		if (options.hasMultipleOptions())
 		{
 			options.onExit.add(exitToMainMenu);
 			controls.onExit.add(switchPage.bind(Options));
 			preferences.onExit.add(switchPage.bind(Options));
+			colors.onExit.add(switchPage.bind(Options));
+			mods.onExit.add(switchPage.bind(Options));
 		}
 		else
 		{
@@ -80,7 +83,6 @@ class OptionsState extends MusicBeatState
 
 	function switchPage(name:PageName)
 	{
-		// Todo animate?
 		setPage(name);
 	}
 
@@ -170,7 +172,8 @@ class OptionsMenu extends Page
 		add(items = new TextMenuList());
 		createItem('preferences', function() switchPage(Preferences));
 		createItem("controls", function() switchPage(Controls));
-		// createItem('colors', function() switchPage(Colors));
+		createItem('colors', function() switchPage(Colors));
+		createItem('mods', function() switchPage(Mods));
 
 		#if CAN_OPEN_LINKS
 		if (showDonate)

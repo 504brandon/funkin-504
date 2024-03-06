@@ -84,6 +84,7 @@ class PlayState extends MusicBeatState
 
 	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	private var playerStrums:FlxTypedGroup<FlxSprite>;
+	private var cpuStrums:FlxTypedGroup<FlxSprite>;
 
 	private var camZooming:Bool = false;
 	private var curSong:String = "";
@@ -792,6 +793,7 @@ class PlayState extends MusicBeatState
 		add(grpNoteSplashes);
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
+		cpuStrums = new FlxTypedGroup<FlxSprite>();
 
 		generateSong();
 
@@ -1671,9 +1673,6 @@ class PlayState extends MusicBeatState
 		{
 			// FlxG.log.add(i);
 			var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
-			var colorswap:ColorSwap = new ColorSwap();
-			babyArrow.shader = colorswap.shader;
-			colorswap.update(Note.arrowColors[i]);
 
 			switch (curStage)
 			{
@@ -1759,8 +1758,20 @@ class PlayState extends MusicBeatState
 
 			babyArrow.ID = i;
 
-			if (player == 1)
+			if (player == 1){
 				playerStrums.add(babyArrow);
+			}else{
+				babyArrow.offset.set(0, 0);
+				babyArrow.centerOffsets();
+				babyArrow.animation.finishCallback = function(name){
+					babyArrow.animation.play("static", true);
+					babyArrow.offset.set(0, 0);
+					babyArrow.centerOffsets();
+				};
+				
+				babyArrow.centerOffsets();
+				cpuStrums.add(babyArrow);
+			}
 
 			babyArrow.animation.play('static');
 			babyArrow.x += 50;
@@ -2196,6 +2207,9 @@ class PlayState extends MusicBeatState
 						case 3:
 							dad.playAnim('singRIGHT' + altAnim, true);
 					}
+
+					cpuStrums.members[daNote.noteData].animation.play("confirm", true);
+					cpuStrums.members[daNote.noteData].offset.set(51.05, 51.05);
 
 					dad.holdTimer = 0;
 
