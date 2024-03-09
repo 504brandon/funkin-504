@@ -1,5 +1,8 @@
 package ui;
 
+import flixel.util.FlxTimer;
+import haxe.Json;
+import openfl.Assets;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -30,12 +33,23 @@ class PreferencesMenu extends ui.OptionsState.Page
 
 		add(items = new TextMenuList());
 
+		createPrefItem('Ghost Tapping', 'ghosttap', true);
 		createPrefItem('naughtyness', 'censor-naughty', true);
 		createPrefItem('downscroll', 'downscroll', false);
 		createPrefItem('flashing menu', 'flashing-menu', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
 		createPrefItem('FPS Counter', 'fps-counter', true);
 		createPrefItem('Auto Pause', 'auto-pause', false);
+
+		if (Assets.exists(Paths.json("preferences"))) {
+			var moddedPrefs:ModHandler.JsonPrefs = Json.parse(Assets.getText(Paths.json("preferences")));
+
+			for (pref in moddedPrefs.preferences) {
+				createPrefItem(pref.name, pref.saveName, pref.defaultValue);
+			}
+		}else{
+			trace("no modded options");
+		}
 
 		camFollow = new FlxObject(FlxG.width / 2, 0, 140, 70);
 		if (items != null)
@@ -71,6 +85,7 @@ class PreferencesMenu extends ui.OptionsState.Page
 		else
 			FlxG.save.data.preferences = preferences;
 
+		preferenceCheck('ghosttap', true);
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
 		preferenceCheck('flashing-menu', true);
@@ -85,12 +100,23 @@ class PreferencesMenu extends ui.OptionsState.Page
 		FlxG.sound.muted = true;
 		#end
 
-		if (!getPref('fps-counter'))
-			FlxG.stage.removeChild(Main.fpsCounter);
+		new FlxTimer().start(0.60, function(time) {
+			Main.fpsCounter.visible = getPref('fps-counter');
+		});
 
 		FlxG.autoPause = getPref('auto-pause');
 
 		Note.arrowColors = getPref("noteColors");
+
+		if (Assets.exists(Paths.json("preferences"))) {
+			var moddedPrefs:ModHandler.JsonPrefs = Json.parse(Assets.getText(Paths.json("preferences")));
+
+			for (pref in moddedPrefs.preferences) {
+				preferenceCheck(pref.saveName, pref.defaultValue);
+			}
+		}else{
+			trace("no modded options");
+		}
 	}
 
 	private function createPrefItem(prefName:String, prefString:String, prefValue:Dynamic):Void
@@ -142,15 +168,10 @@ class PreferencesMenu extends ui.OptionsState.Page
 		switch (prefName)
 		{
 			case 'fps-counter':
-				if (getPref('fps-counter'))
-					FlxG.stage.addChild(Main.fpsCounter);
-				else
-					FlxG.stage.removeChild(Main.fpsCounter);
+				Main.fpsCounter.visible = getPref('fps-counter');
 			case 'auto-pause':
 				FlxG.autoPause = getPref('auto-pause');
 		}
-
-		if (prefName == 'fps-counter') {}
 
 		FlxG.save.data.preferences = preferences;
 	}

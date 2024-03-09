@@ -69,11 +69,6 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		#if polymod
-		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod'], framework: OPENFL});
-		// FlxG.bitmap.clearCache();
-		#end
-
 		startedIntro = false;
 
 		FlxG.game.focusLostFramerate = 60;
@@ -89,7 +84,10 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		ModHandler.loadMods();
+		ModHandler.loadHScript();
+
+		FlxG.save.bind('funkin504', '504brandon');
 		PreferencesMenu.initPrefs();
 		PlayerSettings.init();
 		Highscore.load();

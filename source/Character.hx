@@ -1,5 +1,6 @@
 package;
 
+import openfl.Assets;
 import Section.SwagSection;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -21,6 +22,8 @@ class Character extends FlxSprite
 	public var holdTimer:Float = 0;
 
 	public var animationNotes:Array<Dynamic> = [];
+
+	public var canIdle:Bool = true;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -487,6 +490,19 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				flipX = true;
+
+			default:
+				var json:ModHandler.JsonChars = haxe.Json.parse(Assets.getText("assets/characters/" + curCharacter + ".json"));
+				trace(json);
+
+				frames = Paths.getSparrowAtlas('characters/' + json.spritesheet);
+
+				for (anim in json.anims) {
+					quickAnimAdd(anim.postfix, anim.prefix);
+					
+					if (anim.offset != null && !Math.isNaN(anim.offset[0]))
+						addOffset(anim.postfix, anim.offset[0], anim.offset[1]);
+				}
 		}
 
 		dance();
@@ -624,7 +640,7 @@ class Character extends FlxSprite
 	 */
 	public function dance()
 	{
-		if (!debugMode)
+		if (!debugMode && canIdle)
 		{
 			switch (curCharacter)
 			{

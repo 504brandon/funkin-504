@@ -37,6 +37,8 @@ class Note extends FlxSprite
 	public var colorSwap:ColorSwap;
 	public var noteScore:Float = 1;
 
+	public var noteType:String = "default";
+
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var PURP_NOTE:Int = 0;
 	public static var GREEN_NOTE:Int = 2;
@@ -45,7 +47,13 @@ class Note extends FlxSprite
 
 	public static var arrowColors:Array<Float> = [1, 1, 1, 1];
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
+	public var script:HScript;
+
+	public var cpuShouldHit:Bool = true;
+	public var playerShouldHit:Bool = true;
+	public var shouldShowRating:Bool = true;
+
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?noteType = "default")
 	{
 		super();
 
@@ -62,7 +70,20 @@ class Note extends FlxSprite
 
 		this.noteData = noteData;
 
+		this.noteType = noteType;
+
 		var daStage:String = PlayState.curStage;
+
+		script = new HScript('assets/notes/' + noteType);
+
+		if (!script.isBlank && script.expr != null)
+		{
+			script.interp.scriptObject = this;
+			script.setValue('note', this);
+			script.interp.execute(script.expr);
+		}
+
+		script.callFunction("preCreate");
 
 		switch (daStage)
 		{
@@ -121,6 +142,8 @@ class Note extends FlxSprite
 				// color.saturation *= 4;
 				// replaceColor(0xFFC1C1C1, FlxColor.RED);
 		}
+
+		script.callFunction("create");
 
 		colorSwap = new ColorSwap();
 		shader = colorSwap.shader;
@@ -192,6 +215,8 @@ class Note extends FlxSprite
 				// prevNote.setGraphicSize();
 			}
 		}
+
+		script.callFunction("postCreate");
 	}
 
 	public function updateColors():Void
@@ -203,6 +228,11 @@ class Note extends FlxSprite
 	{
 		super.update(elapsed);
 
+		script.callFunction("update", [elapsed]);
+
+		if (noteData < 0)
+			this.destroy();
+		
 		if (mustPress)
 		{
 			// miss on the NEXT frame so lag doesnt make u miss notes
@@ -238,5 +268,7 @@ class Note extends FlxSprite
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
+
+		script.callFunction("postUpdate", [elapsed]);
 	}
 }
