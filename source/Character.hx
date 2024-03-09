@@ -25,6 +25,8 @@ class Character extends FlxSprite
 
 	public var canIdle:Bool = true;
 
+	public var charPos:Array<Float> = [0, 0];
+
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
 		super(x, y);
@@ -133,19 +135,6 @@ class Character extends FlxSprite
 				updateHitbox();
 				antialiasing = false;
 
-			case 'dad':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST');
-				frames = tex;
-				quickAnimAdd('idle', 'Dad idle dance');
-				quickAnimAdd('singUP', 'Dad Sing Note UP');
-				quickAnimAdd('singRIGHT', 'Dad Sing Note RIGHT');
-				quickAnimAdd('singDOWN', 'Dad Sing Note DOWN');
-				quickAnimAdd('singLEFT', 'Dad Sing Note LEFT');
-
-				loadOffsetFile(curCharacter);
-
-				playAnim('idle');
 			case 'spooky':
 				tex = Paths.getSparrowAtlas('characters/spooky_kids_assets');
 				frames = tex;
@@ -493,7 +482,6 @@ class Character extends FlxSprite
 
 			default:
 				var json:ModHandler.JsonChars = haxe.Json.parse(Assets.getText("assets/characters/" + curCharacter + ".json"));
-				trace(json);
 
 				frames = Paths.getSparrowAtlas('characters/' + json.spritesheet);
 
@@ -503,6 +491,9 @@ class Character extends FlxSprite
 					if (anim.offset != null && !Math.isNaN(anim.offset[0]))
 						addOffset(anim.postfix, anim.offset[0], anim.offset[1]);
 				}
+
+				if (json.positions != null)
+					charPos = json.positions;
 		}
 
 		dance();

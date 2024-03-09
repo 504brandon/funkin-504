@@ -7,6 +7,8 @@ typedef JsonPrefs = {
 typedef JsonChars = {
 	var spritesheet:String;
 	var anims:Array<Dynamic>;
+	var positions:Array<Float>;
+	var extraValues:Map<String, Dynamic>;
 }
 
 class ModHandler
@@ -15,7 +17,7 @@ class ModHandler
 	{
 		polymod.Polymod.init({
 			modRoot: "mods",
-			dirs: [Assets.getText(Paths.txt("modSelected"))],
+			dirs: ["Base Game", Assets.getText(Paths.txt("modSelected"))],
 			errorCallback: (e) ->
 			{
 				trace(e.message);

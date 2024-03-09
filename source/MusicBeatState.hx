@@ -19,6 +19,23 @@ class MusicBeatState extends FlxUIState
 
 	override function create()
 	{
+		#if sys
+		FlxG.signals.preStateSwitch.add(function()
+		{
+			FlxG.sound.list.forEachAlive(function(sound:flixel.system.FlxSound):Void
+			{
+				FlxG.sound.list.remove(sound, true);
+				@:privateAccess
+				FlxG.sound.destroySound(sound);
+				sound.stop();
+				sound.destroy();
+			});
+			FlxG.sound.list.clear();
+		});
+		#end
+
+		openfl.system.System.gc();
+		
 		if (transIn != null)
 			trace('reg ' + transIn.region);
 

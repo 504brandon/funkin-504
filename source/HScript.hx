@@ -74,6 +74,7 @@ class HScript
 				"TankmenBG" => TankmenBG,
 				"FlxBackdrop" => flixel.addons.display.FlxBackdrop,
 				"FlxTypedGroup" => flixel.group.FlxGroup.FlxTypedGroup,
+				"FlxBar" => SomeHScriptShit.FlxBarHandler,
 				"Assets" => openfl.Assets,
 				"Paths" => Paths,
 				"Files" => Paths,

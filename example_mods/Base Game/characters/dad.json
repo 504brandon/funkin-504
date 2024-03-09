@@ -1,0 +1,29 @@
+{
+    "spritesheet": "DADDY_DEAREST",
+    "anims": [
+        {
+            "postfix": "idle",
+            "prefix": "Dad idle dance"
+        },
+        {
+            "postfix": "singLEFT",
+            "prefix": "Dad Sing Note LEFT",
+            "offset": [-10, 10]
+        },
+        {
+            "postfix": "singUP",
+            "prefix": "Dad Sing Note UP",
+            "offset": [-6, 60]
+        },
+        {
+            "postfix": "singDOWN",
+            "prefix": "Dad Sing Note DOWN",
+            "offset": [0, -30]
+        },
+        {
+            "postfix": "singRIGHT",
+            "prefix": "Dad Sing Note RIGHT",
+            "offset": [0, 27]
+        }
+    ]
+}

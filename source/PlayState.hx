@@ -1,5 +1,6 @@
 package;
 
+import sys.FileSystem;
 import lscript.LScript;
 import Section.SwagSection;
 import Song.SwagSong;
@@ -224,20 +225,50 @@ class PlayState extends MusicBeatState
 		#end
 
 		#if sys
-		var script = new HScript('assets/data/${SONG.song.toLowerCase()}/script');
+		var stringList = ["global"];
 
-		if (!script.isBlank && script.expr != null)
+		for (allowed in HScript.allowedExtensions)
 		{
-			script.interp.scriptObject = this;
-			script.setValue('add', add);
-			script.setValue('remove', remove);
-			script.interp.execute(script.expr);
+			if (FileSystem.exists('./mods/${Assets.getText(Paths.txt('modSelected'))}/data/${SONG.song.toLowerCase()}'))
+			{
+				for (str in FileSystem.readDirectory('./mods/${Assets.getText(Paths.txt('modSelected'))}/data/${SONG.song.toLowerCase()}'))
+				{
+					var thingie = str.split(".");
+
+					if (str.endsWith(allowed))
+						stringList.push(SONG.song.toLowerCase() + "/" + thingie[0]);
+				}
+			}
+
+			if (FileSystem.exists('./mods/Base Game/data/${SONG.song.toLowerCase()}'))
+			{
+				for (str in FileSystem.readDirectory('./mods/Base Game/data/${SONG.song.toLowerCase()}'))
+				{
+					var thingie = str.split(".");
+
+					if (str.endsWith(allowed))
+						stringList.push(SONG.song.toLowerCase() + "/" + thingie[0]);
+				}
+			}
 		}
 
-		script.callFunction("preCreate");
+		for (str in stringList)
+		{
+			var script = new HScript('assets/data/' + str);
 
-		if (!scripts.contains(script))
-			scripts.push(script);
+			if (!script.isBlank && script.expr != null)
+			{
+				script.interp.scriptObject = this;
+				script.setValue('add', add);
+				script.setValue('remove', remove);
+				script.interp.execute(script.expr);
+			}
+
+			script.callFunction("preCreate");
+
+			if (!scripts.contains(script))
+				scripts.push(script);
+		}
 
 		if (Assets.exists('assets/data/${SONG.song.toLowerCase()}/script.lua'))
 		{
@@ -669,6 +700,8 @@ class PlayState extends MusicBeatState
 			gfVersion = 'pico-speaker';
 
 		gf = new Character(400, 130, gfVersion);
+		gf.x += gf.charPos[0];
+		gf.y += gf.charPos[1];
 		gf.scrollFactor.set(0.95, 0.95);
 
 		switch (gfVersion)
@@ -696,6 +729,8 @@ class PlayState extends MusicBeatState
 		}
 
 		dad = new Character(100, 100, SONG.player2);
+		dad.x += dad.charPos[0];
+		dad.y += dad.charPos[1];
 
 		camPos = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
 
@@ -735,6 +770,8 @@ class PlayState extends MusicBeatState
 		}
 
 		boyfriend = new Boyfriend(770, 450, SONG.player1);
+		boyfriend.x += boyfriend.charPos[0];
+		boyfriend.y += boyfriend.charPos[1];
 
 		// REPOSITIONING PER STAGE
 		switch (curStage)
@@ -960,7 +997,7 @@ class PlayState extends MusicBeatState
 
 		#if sys
 		for (script in scripts)
-			script.callFunction("create");
+			script.callFunction("postCreate");
 		#end
 
 		super.create();
@@ -2279,7 +2316,6 @@ class PlayState extends MusicBeatState
 	private function popUpScore(strumtime:Float, daNote:Note):Void
 	{
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
-		// boyfriend.playAnim('hey');
 		vocals.volume = 1;
 
 		var rating:FlxSprite = new FlxSprite();
@@ -2936,19 +2972,9 @@ class PlayState extends MusicBeatState
 		if (curBeat % 2 == 0)
 		{
 			if (!boyfriend.animation.curAnim.name.startsWith("sing"))
-				boyfriend.playAnim('idle');
+				boyfriend.dance();
 			if (!dad.animation.curAnim.name.startsWith("sing"))
 				dad.dance();
-		}
-		else if (dad.curCharacter == 'spooky')
-		{
-			if (!dad.animation.curAnim.name.startsWith("sing"))
-				dad.dance();
-		}
-
-		if (curBeat % 8 == 7 && curSong == 'Bopeebo')
-		{
-			boyfriend.playAnim('hey', true);
 		}
 
 		if (curBeat % 16 == 15 && SONG.song == 'Tutorial' && dad.curCharacter == 'gf' && curBeat > 16 && curBeat < 48)
