@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Assets;
@@ -80,5 +81,25 @@ class Main extends Sprite
 
 		fpsCounter = new fps.Text(10, 3);
 		addChild(fpsCounter);
+
+		#if sys
+		FlxG.signals.preStateSwitch.add(function()
+		{
+			for (i in 0...4)
+			{
+				FlxG.sound.list.forEachAlive(function(sound:flixel.system.FlxSound):Void
+				{
+					FlxG.sound.list.remove(sound, true);
+					@:privateAccess
+					FlxG.sound.destroySound(sound);
+					sound.stop();
+					sound.destroy();
+				});
+				FlxG.sound.list.clear();
+
+				openfl.system.System.gc();
+			}
+		});
+		#end
 	}
 }

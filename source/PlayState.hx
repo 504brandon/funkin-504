@@ -98,6 +98,11 @@ class PlayState extends MusicBeatState
 	private var healthBarBG:FlxSprite;
 	private var healthBar:FlxBar;
 
+	private var timeBarBG:FlxSprite;
+	private var timeBar:FlxBar;
+
+	public var timeTxt:FlxText;
+
 	private var generatedMusic:Bool = false;
 	private var startingSong:Bool = false;
 
@@ -908,6 +913,22 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
+		timeBarBG = new FlxSprite(0, 7).loadGraphic(Paths.image('healthBar'));
+		timeBarBG.screenCenter(X);
+		timeBarBG.scrollFactor.set();
+		add(timeBarBG);
+
+		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), Conductor,
+			'songPosition', 0, FlxG.sound.music.length);
+		timeBar.scrollFactor.set();
+		timeBar.createFilledBar(FlxColor.GRAY, FlxColor.LIME);
+		add(timeBar);
+
+		timeTxt = new FlxText(0, timeBarBG.y, FlxG.width, "", 17);
+		timeTxt.setFormat(Paths.font("vcr.ttf"), 17, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		timeTxt.scrollFactor.set();
+		add(timeTxt);
+
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
@@ -926,9 +947,12 @@ class PlayState extends MusicBeatState
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
+		timeBar.cameras = [camHUD];
+		timeBarBG.cameras = [camHUD];
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
@@ -1807,6 +1831,9 @@ class PlayState extends MusicBeatState
 
 		scoreTxt.text = "Score:" + songScore + " • Misses:" + songMisses;
 
+		timeTxt.text = "[" + SONG.song + " - " + CoolUtil.difficultyString() + "] " + FlxStringUtil.formatTime(Conductor.songPosition / 1000) + "/"
+			+ FlxStringUtil.formatTime(FlxG.sound.music.length / 1000);
+
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
 			persistentUpdate = false;
@@ -2156,6 +2183,14 @@ class PlayState extends MusicBeatState
 
 		if (!inCutscene)
 			keyShit();
+
+		var scriptsString:Array<String> = [];
+
+		for (script in scripts)
+			scriptsString.push(script.path);
+
+		Main.fpsCounter.stateDebugShit = "SONG: " + SONG.song + "\nSCROLL SPEED: " + SONG.speed + "\nBPM: " + Conductor.bpm + "\nPLAYER1: "
+			+ boyfriend.curCharacter + "\nPLAYER2: " + dad.curCharacter + "\nSCRIPTS: " + scriptsString;
 
 		#if sys
 		for (script in scripts)

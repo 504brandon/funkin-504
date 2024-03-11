@@ -1,5 +1,6 @@
 package fps;
 
+import ui.PreferencesMenu;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxTween;
 import lime.app.Application;
@@ -31,6 +32,7 @@ class Text extends TextField
 		The current frame rate, expressed using frames-per-second
 	**/
 	public var currentFPS(default, null):Int;
+	public var stateDebugShit:String = "";
 
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
@@ -87,7 +89,8 @@ class Text extends TextField
 				+ Utilities.format_bytes(Memory.getPeakUsage())
 				+ "\nState: source/"
 				+ Type.getClassName(Type.getClass(flixel.FlxG.state)).replace(".", "/")
-				+ ".hx";
+				+ ".hx"
+				+ if (PreferencesMenu.getPref("debug")) "\n\n" + stateDebugShit else "";
 		}
 
 		if (currentFPS < 20)

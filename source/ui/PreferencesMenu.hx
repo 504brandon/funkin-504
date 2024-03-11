@@ -40,6 +40,7 @@ class PreferencesMenu extends ui.OptionsState.Page
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
 		createPrefItem('FPS Counter', 'fps-counter', true);
 		createPrefItem('Auto Pause', 'auto-pause', false);
+		createPrefItem('Debug Utils', 'debug', false);
 
 		if (Assets.exists(Paths.json("preferences"))) {
 			var moddedPrefs:ModHandler.JsonPrefs = Json.parse(Assets.getText(Paths.json("preferences")));
@@ -92,6 +93,7 @@ class PreferencesMenu extends ui.OptionsState.Page
 		preferenceCheck('camera-zoom', true);
 		preferenceCheck('fps-counter', true);
 		preferenceCheck('auto-pause', false);
+		preferenceCheck('debug', false);
 		preferenceCheck('master-volume', 1);
 		preferenceCheck('noteColors', [1, 1, 1, 1]);
 

@@ -1,5 +1,6 @@
 package;
 
+import openfl.utils.Assets;
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.FlxGame;
@@ -18,26 +19,13 @@ class MusicBeatState extends FlxUIState
 		return PlayerSettings.player1.controls;
 
 	override function create()
-	{
-		#if sys
-		FlxG.signals.preStateSwitch.add(function()
-		{
-			FlxG.sound.list.forEachAlive(function(sound:flixel.system.FlxSound):Void
-			{
-				FlxG.sound.list.remove(sound, true);
-				@:privateAccess
-				FlxG.sound.destroySound(sound);
-				sound.stop();
-				sound.destroy();
-			});
-			FlxG.sound.list.clear();
-		});
-		#end
-
-		openfl.system.System.gc();
-		
+	{		
 		if (transIn != null)
 			trace('reg ' + transIn.region);
+
+		new flixel.util.FlxTimer().start(0.10, function(timer) {
+			Main.fpsCounter.stateDebugShit = ""; //set this on update or createPost you goobs
+		});	
 
 		super.create();
 	}

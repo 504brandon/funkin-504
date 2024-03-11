@@ -11,7 +11,7 @@ class HealthIcon extends FlxSprite
 	 */
 	public var sprTracker:FlxSprite;
 
-	var char:String = '';
+	public var char:String = '';
 	var isPlayer:Bool = false;
 
 	public function new(char:String = 'bf', isPlayer:Bool = false)
@@ -44,14 +44,11 @@ class HealthIcon extends FlxSprite
 
 		if (newChar != char)
 		{
-			if (animation.getByName(newChar) == null)
-			{
-				loadGraphic(Paths.image('icons/icon-' + newChar), true, 150, 150);
-				animation.add(newChar, [0, 1], 0, false, isPlayer);
-			}
-			animation.play(newChar);
-			char = newChar;
+			loadGraphic(Paths.image('icons/icon-' + newChar), true, 150, 150);
+			animation.add(newChar, [0, 1], 0, false, isPlayer);
 		}
+		animation.play(newChar);
+		char = newChar;
 	}
 
 	override function update(elapsed:Float)

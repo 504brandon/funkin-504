@@ -58,7 +58,12 @@ class PauseSubState extends MusicBeatSubstate
 		add(levelInfo);
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
-		levelDifficulty.text += CoolUtil.difficultyString();
+		for (i in 0...CoolUtil.difficultyString().length) {
+			if (i == 0)
+				levelDifficulty.text += CoolUtil.difficultyString().charAt(i).toUpperCase();
+			else
+				levelDifficulty.text += CoolUtil.difficultyString().charAt(i).toLowerCase();
+		}
 		levelDifficulty.scrollFactor.set();
 		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
 		levelDifficulty.updateHitbox();

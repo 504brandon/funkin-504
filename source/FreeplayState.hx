@@ -63,9 +63,11 @@ class FreeplayState extends MusicBeatState
 
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
-		for (i in 0...initSonglist.length)
+		for (str in initSonglist)
 		{
-			songs.push(new SongMetadata(initSonglist[i], 1, 'gf'));
+			var array = str.split(":");
+
+			songs.push(new SongMetadata(array[0], 1, array[1]));
 		}
 
 		if (FlxG.sound.music != null)
@@ -142,33 +144,6 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		changeDiff();
 
-		// FlxG.sound.playMusic(Paths.music('title'), 0);
-		// FlxG.sound.music.fadeIn(2, 0, 0.8);
-		// selector = new FlxText();
-
-		// selector.size = 40;
-		// selector.text = ">";
-		// add(selector);
-
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
-
-		// JUST DOIN THIS SHIT FOR TESTING!!!
-		/* 
-			var md:String = Markdown.markdownToHtml(Assets.getText('CHANGELOG.md'));
-
-			var texFel:TextField = new TextField();
-			texFel.width = FlxG.width;
-			texFel.height = FlxG.height;
-			// texFel.
-			texFel.htmlText = md;
-
-			FlxG.stage.addChild(texFel);
-
-			// scoreText.textField.htmlText = md;
-
-			trace(md);
-		 */
-
 		super.create();
 	}
 
@@ -195,6 +170,9 @@ class FreeplayState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (FlxG.keys.justPressed.SEVEN)
+			FlxG.switchState(new editors.FreeplayEditor());
 
 		if (FlxG.sound.music != null)
 		{
