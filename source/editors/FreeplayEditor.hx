@@ -1,5 +1,6 @@
 package editors;
 
+import flixel.FlxSprite;
 import openfl.net.FileReference;
 import flixel.ui.FlxButton;
 import flixel.FlxG;
@@ -18,6 +19,7 @@ class FreeplayEditor extends MusicBeatState
 	// display shit
 	var songArray:Array<Alphabet> = [];
 	var iconArray:Array<HealthIcon> = [];
+	var bg:FlxSprite;
 
 	// state shit
 	var songAmmont:Int = 1;
@@ -35,6 +37,9 @@ class FreeplayEditor extends MusicBeatState
 		FlxG.mouse.enabled = true;
 		FlxG.mouse.visible = true;
 
+		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		add(bg);
+
 		songName = new FlxUIInputText(FlxG.width * 0.76, 0, 300, "Bopeebo", 24, FlxColor.BLACK, FlxColor.GRAY);
 		add(songName);
 
@@ -51,10 +56,10 @@ class FreeplayEditor extends MusicBeatState
                 if (songShit.length > 0)
                     songShit += "\n";
 
-                songShit += songArray[i].text + ":" + iconArray[i].char;
+                songShit += songArray[i].text.replace(" ", "-") + ":" + iconArray[i].char;
             }
 
-			file.save(songShit, "freeplaySonglist.txt");
+			file.save(songShit + "\n<Made In Funkin504 Freeplay Editor>", "freeplaySonglist.txt");
 		});
 		add(saveButton);
 
@@ -98,9 +103,9 @@ class FreeplayEditor extends MusicBeatState
 		if (charName.hasFocus && FlxG.keys.justPressed.ENTER)
 			iconArray[curSelected].changeIcon(charName.text.toLowerCase());
 
-		if (controls.UI_UP_P && !charName.hasFocus)
+		if (controls.UI_UP_P && !songName.hasFocus && !charName.hasFocus)
 			changeSelection(-1);
-		if (controls.UI_DOWN_P && !charName.hasFocus)
+		if (controls.UI_DOWN_P && !songName.hasFocus && !charName.hasFocus)
 			changeSelection(1);
 
 		super.update(elapsed);

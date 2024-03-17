@@ -26,6 +26,7 @@ class FreeplayState extends MusicBeatState
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
+	var lengthText:FlxText;
 	var lerpScore:Float = 0;
 	var intendedScore:Int = 0;
 
@@ -67,7 +68,8 @@ class FreeplayState extends MusicBeatState
 		{
 			var array = str.split(":");
 
-			songs.push(new SongMetadata(array[0], 1, array[1]));
+			if (array[0] != "<Made In Funkin504 Freeplay Editor>")
+				songs.push(new SongMetadata(array[0], 1, array[1]));
 		}
 
 		if (FlxG.sound.music != null)
@@ -139,6 +141,10 @@ class FreeplayState extends MusicBeatState
 		diffText.font = scoreText.font;
 		add(diffText);
 
+		lengthText = new FlxText(0, scoreText.y + 25, 0, "(0/0)", 22);
+		lengthText.font = scoreText.font;
+		add(lengthText);
+
 		add(scoreText);
 
 		changeSelection();
@@ -186,6 +192,7 @@ class FreeplayState extends MusicBeatState
 		bg.color = FlxColor.interpolate(bg.color, coolColors[songs[curSelected].week % coolColors.length], CoolUtil.camLerpShit(0.045));
 
 		scoreText.text = "PERSONAL BEST:" + Math.round(lerpScore);
+		lengthText.text = "(" + curSelected + "/" + songs.length + ")";
 
 		positionHighscore();
 
@@ -295,6 +302,8 @@ class FreeplayState extends MusicBeatState
 
 		diffText.x = Std.int(scoreBG.x + scoreBG.width / 2);
 		diffText.x -= (diffText.width / 2);
+
+		lengthText.x = 1285 + -scoreBG.scale.x;
 	}
 }
 

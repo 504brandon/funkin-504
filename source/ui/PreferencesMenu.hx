@@ -42,13 +42,17 @@ class PreferencesMenu extends ui.OptionsState.Page
 		createPrefItem('Auto Pause', 'auto-pause', false);
 		createPrefItem('Debug Utils', 'debug', false);
 
-		if (Assets.exists(Paths.json("preferences"))) {
+		if (Assets.exists(Paths.json("preferences")))
+		{
 			var moddedPrefs:ModHandler.JsonPrefs = Json.parse(Assets.getText(Paths.json("preferences")));
 
-			for (pref in moddedPrefs.preferences) {
+			for (pref in moddedPrefs.preferences)
+			{
 				createPrefItem(pref.name, pref.saveName, pref.defaultValue);
 			}
-		}else{
+		}
+		else
+		{
 			trace("no modded options");
 		}
 
@@ -102,7 +106,8 @@ class PreferencesMenu extends ui.OptionsState.Page
 		FlxG.sound.muted = true;
 		#end
 
-		new FlxTimer().start(0.60, function(time) {
+		new FlxTimer().start(0.60, function(time)
+		{
 			Main.fpsCounter.visible = getPref('fps-counter');
 		});
 
@@ -110,13 +115,17 @@ class PreferencesMenu extends ui.OptionsState.Page
 
 		Note.arrowColors = getPref("noteColors");
 
-		if (Assets.exists(Paths.json("preferences"))) {
+		if (Assets.exists(Paths.json("preferences")))
+		{
 			var moddedPrefs:ModHandler.JsonPrefs = Json.parse(Assets.getText(Paths.json("preferences")));
 
-			for (pref in moddedPrefs.preferences) {
+			for (pref in moddedPrefs.preferences)
+			{
 				preferenceCheck(pref.saveName, pref.defaultValue);
 			}
-		}else{
+		}
+		else
+		{
 			trace("no modded options");
 		}
 	}
@@ -133,7 +142,7 @@ class PreferencesMenu extends ui.OptionsState.Page
 					prefToggle(prefString);
 
 				default:
-					trace('swag');
+					// ogfdugxhikufjdhgkdjhdfgkjhdkjdfghkjgdhdi im cumming
 			}
 		});
 
@@ -143,10 +152,10 @@ class PreferencesMenu extends ui.OptionsState.Page
 				createCheckbox(prefString);
 
 			default:
-				trace('swag');
+				// ogfdugxhikufjdhgkdjhdfgkjhdkjdfghkjgdhdi im cumming
 		}
 
-		trace(Type.typeof(prefValue).getName());
+		//trace(Type.typeof(prefValue).getName());
 	}
 
 	function createCheckbox(prefString:String)
